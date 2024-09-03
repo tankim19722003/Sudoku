@@ -367,4 +367,7 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
                 value
         );
     }
+    public void hello() {
+        System.out.println("Hello");
+    }
 }
