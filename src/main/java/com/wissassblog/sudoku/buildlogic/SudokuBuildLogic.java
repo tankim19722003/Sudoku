@@ -22,14 +22,21 @@ public class SudokuBuildLogic {
 
         try {
             //will throw if no game data is found in local storage
-
             initialState = storage.getGameData();
         } catch (IOException e) {
 
             initialState = GameLogic.getNewGame();
+
             //this method below will also throw an IOException
             //if we cannot update the game data. At this point
             //the application is considered unrecoverable
+
+//            for (int i = 0; i < 9; i++) {
+//                for (int j = 0; j < 9; j++) {
+//                    System.out.print(initialState.getGridState()[i][j] + " ");
+//                }
+//                System.out.println();
+//            }
             storage.updateGameData(initialState);
         }
 

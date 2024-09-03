@@ -11,11 +11,12 @@ import java.io.IOException;
  * This class is the Root Container (the thing which attends to all of the primary objects which must communicate when
  * the program is running (a running program is called a "process").
  */
+
 public class SudokuApplication extends Application {
     private UserInterfaceImpl uiImpl;
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException, InterruptedException {
         //Get SudokuGame object for a new game
         uiImpl = new UserInterfaceImpl(primaryStage);
 

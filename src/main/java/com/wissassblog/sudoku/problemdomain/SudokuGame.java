@@ -58,4 +58,7 @@ public class SudokuGame implements Serializable {
         return SudokuUtilities.copyToNewArray(gridState);
     }
 
+    public int[][] getGridState() {
+        return gridState;
+    }
 }

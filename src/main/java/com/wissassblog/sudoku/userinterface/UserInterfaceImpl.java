@@ -1,5 +1,6 @@
 package com.wissassblog.sudoku.userinterface;
 
+import com.wissassblog.sudoku.PrintGrid;
 import com.wissassblog.sudoku.constants.GameState;
 import com.wissassblog.sudoku.problemdomain.Coordinates;
 import com.wissassblog.sudoku.problemdomain.SudokuGame;
@@ -20,12 +21,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 /**
  * Manages the window, and displays a pop up notification when the user completes the puzzle.
  */
 public class UserInterfaceImpl implements IUserInterfaceContract.View,
         EventHandler<KeyEvent> {
+    private final Logger logger = Logger.getLogger(this.getClass().toString());
     private final Stage stage;
     private final Group root;
 
@@ -103,7 +106,6 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
                 int y = yOrigin + yIndex * xAndYDelta;
                 //draw it
                 SudokuTextField tile = new SudokuTextField(xIndex, yIndex);
-
                 //encapsulated style information
                 styleSudokuTile(tile, x, y);
 
@@ -125,6 +127,32 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
      * @param x
      * @param y
      */
+
+    public static void styleSudokuError(Coordinates coordinates) {
+
+        //where to start drawing the numbers
+        final int xOrigin = 50;
+        final int yOrigin = 50;
+        //how much to move the x or y value after each loop
+        final int xAndYDelta = 64;
+
+        SudokuTextField tile = new SudokuTextField(coordinates.getX(), coordinates.getY());
+        Font numberFont = new Font(32);
+        tile.setFont(numberFont);
+        tile.setStyle("-fx-text-fill: red;");
+        tile.setAlignment(Pos.CENTER);
+
+        int x = xOrigin + coordinates.getX() * xAndYDelta;
+        int y = yOrigin + coordinates.getY() * xAndYDelta;
+        tile.setLayoutX(x);
+        tile.setLayoutY(y);
+        tile.setPrefHeight(64);
+        tile.setPrefWidth(64);
+
+        tile.setBackground(Background.EMPTY);
+    }
+
+
     private void styleSudokuTile(SudokuTextField tile, double x, double y) {
         Font numberFont = new Font(32);
         tile.setFont(numberFont);
@@ -250,6 +278,7 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
 
     @Override
     public void updateBoard(SudokuGame game) {
+
         for (int xIndex = 0; xIndex < 9; xIndex++) {
             for (int yIndex = 0; yIndex < 9; yIndex++) {
                 TextField tile = textFieldCoordinates.get(new Coordinates(xIndex, yIndex));
@@ -309,8 +338,16 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View,
             ) {
                 int value = Integer.parseInt(event.getText());
                 handleInput(value, event.getSource());
+
+                SudokuTextField source= (SudokuTextField) event.getSource();
+//                System.out.println(source.getX() + " " + source.getY());
+                logger.info("x = " + source.getX() +" y = " + source.getY());
             } else if (event.getCode() == KeyCode.BACK_SPACE) {
                 handleInput(0, event.getSource());
+
+//                Update file sukudo
+
+
             } else {
                 ((TextField)event.getSource()).setText("");
             }

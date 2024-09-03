@@ -4,6 +4,7 @@ package com.wissassblog.sudoku.computationlogic;
 
 import com.wissassblog.sudoku.constants.GameState;
 import com.wissassblog.sudoku.constants.Rows;
+import com.wissassblog.sudoku.problemdomain.Coordinates;
 import com.wissassblog.sudoku.problemdomain.SudokuGame;
 
 import java.util.*;
@@ -154,7 +155,7 @@ public class GameLogic {
         while (yIndex < yIndexEnd) {
 
             while (xIndex < xIndexEnd) {
-                square.add(
+                if(grid[xIndex][yIndex] != 0) square.add(
                         grid[xIndex][yIndex]
                 );
                 xIndex++;
@@ -175,7 +176,7 @@ public class GameLogic {
         for (int xIndex = 0; xIndex < GRID_BOUNDARY; xIndex++) {
             List<Integer> row = new ArrayList<>();
             for (int yIndex = 0; yIndex < GRID_BOUNDARY; yIndex++) {
-                row.add(grid[xIndex][yIndex]);
+                if(grid[xIndex][yIndex] != 0) row.add(grid[xIndex][yIndex]);
             }
 
             if (collectionHasRepeats(row)) return true;
@@ -184,11 +185,26 @@ public class GameLogic {
         return false;
     }
 
+    // get coordinate of invalid value
+    // the grid is reversed col and row
+    public static Optional<Coordinates> getCoordinateOfcolumnAreInvalid(int value, int row, int column, int[][] grid) {
+
+        for (int xIndex = 0; xIndex < GRID_BOUNDARY; xIndex++) {
+//            System.out.println(xIndex + " " +  column + " value: " + grid[xIndex][column]);
+            if((grid[column][xIndex] == value) && (xIndex != row)){
+//                System.out.println(grid[xIndex][column]);
+                return Optional.of(new Coordinates(column, xIndex));
+            }
+
+        }
+        return Optional.empty();
+    }
+
     public static boolean rowsAreInvalid(int[][] grid) {
         for (int yIndex = 0; yIndex < GRID_BOUNDARY; yIndex++) {
             List<Integer> row = new ArrayList<>();
             for (int xIndex = 0; xIndex < GRID_BOUNDARY; xIndex++) {
-                row.add(grid[xIndex][yIndex]);
+                if(grid[xIndex][yIndex] != 0) row.add(grid[xIndex][yIndex]);
             }
 
             if (collectionHasRepeats(row)) return true;

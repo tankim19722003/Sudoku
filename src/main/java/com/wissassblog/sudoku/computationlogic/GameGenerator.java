@@ -1,5 +1,6 @@
 package com.wissassblog.sudoku.computationlogic;
 
+import com.wissassblog.sudoku.PrintGrid;
 import com.wissassblog.sudoku.constants.GameState;
 import com.wissassblog.sudoku.problemdomain.Coordinates;
 import com.wissassblog.sudoku.problemdomain.SudokuGame;
@@ -12,10 +13,11 @@ import static com.wissassblog.sudoku.problemdomain.SudokuGame.GRID_BOUNDARY;
 
 
 class GameGenerator {
+    private static int [][]gridSolved;
     public static int[][] getNewGameGrid() {
         return unsolveGame(getSolvedGame());
-    }
 
+    }
     /**
      * 1. Generate a new 9x9 2D Array.
      * 2. For each value in the range 1..9, allocate that value 9 times based on the following constraints:
@@ -64,25 +66,33 @@ class GameGenerator {
                     }
                 }
 
-                int xCoordinate = random.nextInt(GRID_BOUNDARY);
-                int yCoordinate = random.nextInt(GRID_BOUNDARY);
+                while (true) {
+                    int xCoordinate = random.nextInt(GRID_BOUNDARY);
+                    int yCoordinate = random.nextInt(GRID_BOUNDARY);
 
-                if (newGrid[xCoordinate][yCoordinate] == 0) {
-                    newGrid[xCoordinate][yCoordinate] = value;
+                    if (newGrid[xCoordinate][yCoordinate] == 0) {
+                        newGrid[xCoordinate][yCoordinate] = value;
 
-                    //if value results in an invalid game, then re-assign that element to 0 and try again
-                    if (GameLogic.sudokuIsInvalid(newGrid)) {
-                        newGrid[xCoordinate][yCoordinate] = 0;
-                        interrupt++;
-                    }
-                    //otherwise, indicate that a value has been allocated, and add it to the allocation tracker.
-                    else {
-                        allocTracker.add(new Coordinates(xCoordinate, yCoordinate));
-                        allocations++;
+                        //if value results in an invalid game, then re-assign that element to 0 and try again
+                        if (GameLogic.sudokuIsInvalid(newGrid)) {
+                            newGrid[xCoordinate][yCoordinate] = 0;
+                            interrupt++;
+                        }
+                        //otherwise, indicate that a value has been allocated, and add it to the allocation tracker.
+                        else {
+                            allocTracker.add(new Coordinates(xCoordinate, yCoordinate));
+                            allocations++;
+                        }
+
+                        break;
                     }
                 }
             }
         }
+
+        // copy anwser
+        gridSolved = SudokuUtilities.copyToNewArray(newGrid);
+
         return newGrid;
     }
 
@@ -142,6 +152,25 @@ class GameGenerator {
             for (int yIndex = 0; yIndex < GRID_BOUNDARY; yIndex++) {
                 newGrid[xIndex][yIndex] = 0;
             }
+        }
+    }
+
+
+    public static int[][] getSolvedMatrix() {
+        return GameGenerator.gridSolved;
+    }
+
+    public static void main(String[] args) {
+        GameGenerator.getSolvedGame();
+        final int [][]grid = GameGenerator.getSolvedMatrix();
+
+//        System.out.println(grid);
+
+        for(int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println("\n");
         }
     }
 

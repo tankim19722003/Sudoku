@@ -27,7 +27,6 @@ public class LocalStorageImpl implements IStorage {
     public void updateGameData(SudokuGame game) throws IOException {
         try {
 
-
             FileOutputStream fileOutputStream =
                     new FileOutputStream(GAME_DATA);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -46,6 +45,12 @@ public class LocalStorageImpl implements IStorage {
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         try {
             SudokuGame gameState = (SudokuGame) objectInputStream.readObject();
+            for (int i = 0; i < 9; i++) {
+                for(int j = 0; j < 9; j++) {
+                    System.out.print(gameState.getGridState()[i][j] + " ");
+                }
+                System.out.println("\n");
+            }
             objectInputStream.close();
             return gameState;
         } catch (ClassNotFoundException e) {

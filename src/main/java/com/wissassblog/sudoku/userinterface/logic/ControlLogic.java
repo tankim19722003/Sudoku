@@ -4,11 +4,14 @@ package com.wissassblog.sudoku.userinterface.logic;
 import com.wissassblog.sudoku.constants.GameState;
 import com.wissassblog.sudoku.constants.Messages;
 import com.wissassblog.sudoku.computationlogic.GameLogic;
+import com.wissassblog.sudoku.problemdomain.Coordinates;
 import com.wissassblog.sudoku.problemdomain.IStorage;
 import com.wissassblog.sudoku.problemdomain.SudokuGame;
 import com.wissassblog.sudoku.userinterface.IUserInterfaceContract;
+import com.wissassblog.sudoku.userinterface.UserInterfaceImpl;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Since this is a single screen application, just one container (class) for the logic of the user interface is
@@ -17,6 +20,7 @@ import java.io.IOException;
 
 public class ControlLogic implements IUserInterfaceContract.EventListener {
 
+    private static int tempt = 0;
     private IStorage storage;
     //Remember, this could be the real UserInterfaceImpl, or it could be a test class
     //which implements the same interface!
@@ -44,6 +48,26 @@ public class ControlLogic implements IUserInterfaceContract.EventListener {
             SudokuGame gameData = storage.getGameData();
             int[][] newGridState = gameData.getCopyOfGridState();
             newGridState[x][y] = input;
+
+            // check invalid value
+
+            // invalid row, col, square
+            System.out.println("Co vao day");
+            if (GameLogic.columnsAreInvalid(newGridState)) {
+                Optional<Coordinates> invalidColCoordinateOptional = GameLogic.getCoordinateOfcolumnAreInvalid(input, x, y, newGridState);
+
+                if (invalidColCoordinateOptional.isPresent()) {
+                    Coordinates coordinates = invalidColCoordinateOptional.get();
+                    System.out.println("Same value column at Coordinate: X = " + coordinates.getX() + " Y = " + coordinates.getY());
+
+                    UserInterfaceImpl.styleSudokuError(coordinates);
+                }
+            }
+            // fill wrong anwser
+
+
+            // disabled input
+
 
             gameData = new SudokuGame(
                     GameLogic.checkForCompletion(newGridState),

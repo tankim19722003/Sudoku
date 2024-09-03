@@ -15,22 +15,6 @@ import static com.wissassblog.sudoku.problemdomain.SudokuGame.GRID_BOUNDARY;
  */
 public class SudokuSolver {
 
-    /**
-     * 1.Enumerate all empty cells in typewriter order (left to right, top to bottom)
-     * <p>
-     * 2.Our “current cell” is the first cell in the enumeration.
-     * <p>
-     * 3.Enter a 1 into the current cell. If this violates the Sudoku condition, try entering a 2, then a 3, and so forth, until
-     * a. the entry does not violate the Sudoku condition, or until
-     * b. you have reached 9 and still violate the Sudoku condition.
-     * <p>
-     * <p>
-     * 4.In case a: if the current cell was the last enumerated one, then the puzzle is solved.
-     * If not, then go back to step 2 with the “current cell” being the next cell.
-     * In case b: if the current cell is the first cell in the enumeration, then the Sudoku puzzle does not have a solution.
-     * If not, then erase the 9 from the current cell, call the previous cell in the enumeration the new “current cell”, and
-     * continue with step 3.
-     */
     public static boolean puzzleIsSolvable(int[][] puzzle) {
 
         //step 1:
@@ -40,11 +24,25 @@ public class SudokuSolver {
         //the size of input O(n) is small.
         int index = 0;
         int input = 1;
-        while (index < 10) {
+        while (index < 40) {
             Coordinates current = emptyCells[index];
             input = 1;
-            while (input < 40) {
-                puzzle[current.getX()][current.getY()] = input;
+            while (input < 10) {
+                
+                // if value different from 0, input increase by 1
+                if(puzzle[current.getX()][current.getY()] != 0) {
+
+                    int currentValue = puzzle[current.getX()][current.getY()] + 1;
+                    input = currentValue;
+                    puzzle[current.getX()][current.getY()] = input;
+
+
+                } else {
+                  
+                    puzzle[current.getX()][current.getY()] = input;
+                
+                }
+
                 //if puzzle is invalid....
                 if (GameLogic.sudokuIsInvalid(puzzle)) {
                     //if we hit GRID_BOUNDARY and it is still invalid, move to step 4b
@@ -57,7 +55,6 @@ public class SudokuSolver {
                         index--;
                     }
 
-                    input++;
                 } else {
                     index++;
 
